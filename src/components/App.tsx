@@ -109,40 +109,52 @@ return (
           <PanelSwitcher />
         </div>
 
-        <div className="mobile-panel-switcher">
-          <button
-            type="button"
-            className={
-              layout.mode === 'single' && layout.focus === 'viewer'
-                ? 'mobile-panel-button active'
-                : 'mobile-panel-button'
-            }
-            onClick={() => {
-              if (layout.mode === 'single') {
-                model.changeSingleVisibility('viewer');
-              }
-            }}
-          >
-            3D
-          </button>
+<div className="mobile-panel-switcher">
 
-          <button
-            type="button"
-            className={
-              layout.mode === 'single' &&
-              layout.focus === 'customizer'
-                ? 'mobile-panel-button active'
-                : 'mobile-panel-button'
-            }
-            onClick={() => {
-              if (layout.mode === 'single') {
-                model.changeSingleVisibility('customizer');
-              }
-            }}
-          >
-            Customize
-          </button>
-        </div>
+  <button
+    type="button"
+    className={
+      layout.mode === 'single' && layout.focus === 'viewer'
+        ? 'mobile-panel-button active'
+        : 'mobile-panel-button'
+    }
+    onClick={() => {
+      if (layout.mode === 'single') {
+        model.changeSingleVisibility('viewer');
+      }
+    }}
+  >
+    3D
+  </button>
+
+  <button
+    type="button"
+    className={
+      layout.mode === 'single' &&
+      layout.focus === 'customizer'
+        ? 'mobile-panel-button active'
+        : 'mobile-panel-button'
+    }
+    onClick={() => {
+      if (layout.mode === 'single') {
+        model.changeSingleVisibility('customizer');
+      }
+    }}
+  >
+    Customize
+  </button>
+
+  <button
+    type="button"
+    className="mobile-panel-button"
+    onClick={() => {
+      window.location.href = '/library/';
+    }}
+  >
+    Library
+  </button>
+
+</div>
 
         <div
           className={
