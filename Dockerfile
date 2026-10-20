@@ -16,7 +16,7 @@ COPY . .
 
 RUN npm install
 
-RUN node -e "const fs=require('fs'); const config=JSON.parse(fs.readFileSync('libs-config.json','utf8')); console.log(JSON.stringify(config.fonts,null,2));"
+RUN ls -lah /app
 
 RUN npm run build:libs
 
