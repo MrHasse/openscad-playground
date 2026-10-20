@@ -16,8 +16,6 @@ COPY . .
 
 RUN npm install
 
-RUN ls -lah /app
-
 RUN npm run build:libs
 
 RUN npm run build
