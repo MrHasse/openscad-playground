@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Mina OpenSCAD-filer</title>
+  <style>
+    :root { color-scheme: dark; font-family: system-ui, sans-serif; }
+    body { max-width: 960px; margin: 0 auto; padding: 24px; background:#111827; color:#e5e7eb; }
+    h1 { margin-bottom: 6px; }
+    .hint { color:#9ca3af; margin-bottom:24px; }
+    .toolbar { display:flex; gap:12px; margin-bottom:18px; flex-wrap:wrap; }
+    button,a.home { border:0; border-radius:8px; padding:10px 14px; background:#2563eb; color:white; text-decoration:none; cursor:pointer; }
+    ul { list-style:none; padding:0; }
+    li { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 14px; margin:8px 0; background:#1f2937; border-radius:8px; }
+    .name { overflow-wrap:anywhere; }
+    .open { color:#93c5fd; text-decoration:none; white-space:nowrap; }
+    .empty,.error { padding:16px; background:#1f2937; border-radius:8px; }
+  </style>
+</head>
+<body>
+  <h1>Mina SCAD-filer</h1>
+  <p class="hint">Klicka på en fil för att läsa in den direkt i OpenSCAD Playground.</p>
+  <div class="toolbar">
+    <a class="home" href="/">Öppna Playground</a>
+    <button type="button" onclick="loadModels()">Uppdatera listan</button>
+  </div>
+  <div id="status">Läser modeller...</div>
+  <ul id="models"></ul>
+<script>
+async function loadModels() {
+  const status = document.getElementById('status');
+  const list = document.getElementById('models');
+  status.textContent = 'Läser modeller...';
+  list.replaceChildren();
+  try {
+    const response = await fetch('/models/', { cache: 'no-store' });
+    if (!response.ok) throw new Error('HTTP ' + response.status);
+    const entries = await response.json();
+    const files = entries
+      .filter(x => x.type === 'file' && x.name.toLowerCase().endsWith('.scad'))
+      .sort((a,b) => a.name.localeCompare(b.name, 'sv'));
+    status.textContent = files.length ? files.length + ' SCAD-fil(er)' : '';
+    if (!files.length) {
+      status.className = 'empty';
+      status.textContent = 'Inga .scad-filer hittades i modellkatalogen.';
+      return;
+    }
+    status.className = '';
+    for (const file of files) {
+      const sourceUrl = new URL('/models/' + encodeURIComponent(file.name), location.origin).href;
+      const playgroundUrl = '/#url=' + encodeURIComponent(sourceUrl);
+      const li = document.createElement('li');
+      const name = document.createElement('span');
+      name.className = 'name';
+      name.textContent = file.name;
+      const open = document.createElement('a');
+      open.className = 'open';
+      open.href = playgroundUrl;
+      open.textContent = 'Öppna i Playground';
+      li.append(name, open);
+      list.append(li);
+    }
+  } catch (error) {
+    status.className = 'error';
+    status.textContent = 'Kunde inte läsa modellistan: ' + error.message;
+  }
+}
+loadModels();
+</script>
+</body>
+</html>
