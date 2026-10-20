@@ -213,19 +213,34 @@ class OpenSCADLibrariesPlugin {
 
         await this.ensureDir(notoDir);
 
-        // Download Noto fonts
-        for (const font of fonts.notoFonts) {
-            const fontPath = path.join(notoDir, font);
-            if (!existsSync(fontPath)) {
-                const url = fonts.notoBaseUrl + font;
-                await this.downloadFile(url, fontPath);
-            }
-        }
+// Download Noto fonts
+for (const font of fonts.notoFonts) {
+    const fontPath = path.join(notoDir, font);
 
-        // Clone liberation fonts if not exists
-        if (!existsSync(liberationDir)) {
-            await this.cloneRepo(fonts.liberationRepo, liberationDir, fonts.liberationBranch);
-        }
+    if (!existsSync(fontPath)) {
+        const url = fonts.notoBaseUrl + font;
+        await this.downloadFile(url, fontPath);
+    }
+}
+
+// Download additional custom fonts
+for (const font of fonts.extraFonts || []) {
+    const fontPath = path.join(notoDir, font.file);
+
+    if (!existsSync(fontPath)) {
+        console.log(`Downloading custom font: ${font.file}`);
+        await this.downloadFile(font.url, fontPath);
+    }
+}
+
+// Clone liberation fonts if not exists
+if (!existsSync(liberationDir)) {
+    await this.cloneRepo(
+        fonts.liberationRepo,
+        liberationDir,
+        fonts.liberationBranch
+    );
+}
 
         // Create fonts zip
         const fontsZip = path.join(this.publicLibsDir, 'fonts.zip');
