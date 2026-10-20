@@ -1,0 +1,19 @@
+services:
+
+  openscad-playground:
+
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    image: openscad-playground-pacifico:local
+
+    container_name: openscad-playground
+
+    restart: unless-stopped
+
+    ports:
+      - "8085:80"
+
+    volumes:
+      - /openscad/models:/usr/share/nginx/html/models:ro
