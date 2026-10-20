@@ -17,7 +17,29 @@ export function App({initialState, statePersister, fs}: {initialState: State, st
   
   const model = new Model(fs, state, setState, statePersister);
   useEffect(() => model.init());
+  
+// Växla automatiskt till single mode på mobil
+useEffect(() => {
+  const isMobile = window.matchMedia('(max-width: 767px)').matches;
 
+  if (isMobile && state.view.layout.mode !== 'single') {
+    model.changeLayout('single');
+  }
+}, [state.view.layout.mode]);
+
+// Visa 3D-vyn som standard på mobil
+useEffect(() => {
+  const isMobile = window.matchMedia('(max-width: 767px)').matches;
+  const currentLayout = state.view.layout;
+
+  if (
+    isMobile &&
+    currentLayout.mode === 'single' &&
+    currentLayout.focus === 'editor'
+  ) {
+    model.changeSingleVisibility('viewer');
+  }
+}, [state.view.layout.mode, state.view.layout.focus]);
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'F5') {
@@ -73,38 +95,120 @@ export function App({initialState, statePersister, fs}: {initialState: State, st
     }
   }
 
-  return (
-    <ModelContext.Provider value={model}>
-      <FSContext.Provider value={fs}>
-        <div className='flex flex-column' style={{
-            flex: 1,
-          }}>
-          
+return (
+  <ModelContext.Provider value={model}>
+    <FSContext.Provider value={fs}>
+      <div
+        className="flex flex-column"
+        style={{
+          flex: 1,
+        }}
+      >
+
+        <div className="desktop-panel-switcher">
           <PanelSwitcher />
-    
-          <div className={mode === 'multi' ? 'flex flex-row' : 'flex flex-column'}
-              style={mode === 'multi' ? {flex: 1} : {
-                flex: 1,
-                position: 'relative'
-              }}>
-
-            <EditorPanel className={`
-              opacity-animated
-              ${layout.mode === 'single' && layout.focus !== 'editor' ? 'opacity-0' : ''}
-              ${layout.mode === 'single' ? 'absolute-fill' : ''}
-            `} style={getPanelStyle('editor')} />
-            <ViewerPanel className={layout.mode === 'single' ? `absolute-fill` : ''} style={getPanelStyle('viewer')} />
-            <CustomizerPanel className={`
-              opacity-animated
-              ${layout.mode === 'single' && layout.focus !== 'customizer' ? 'opacity-0' : ''}
-              ${layout.mode === 'single' ? `absolute-fill` : ''}
-            `} style={getPanelStyle('customizer')} />
-          </div>
-
-          <Footer />
-          <ConfirmDialog />
         </div>
-      </FSContext.Provider>
-    </ModelContext.Provider>
-  );
+
+        <div className="mobile-panel-switcher">
+          <button
+            type="button"
+            className={
+              layout.mode === 'single' && layout.focus === 'viewer'
+                ? 'mobile-panel-button active'
+                : 'mobile-panel-button'
+            }
+            onClick={() => {
+              if (layout.mode === 'single') {
+                model.changeSingleVisibility('viewer');
+              }
+            }}
+          >
+            3D
+          </button>
+
+          <button
+            type="button"
+            className={
+              layout.mode === 'single' &&
+              layout.focus === 'customizer'
+                ? 'mobile-panel-button active'
+                : 'mobile-panel-button'
+            }
+            onClick={() => {
+              if (layout.mode === 'single') {
+                model.changeSingleVisibility('customizer');
+              }
+            }}
+          >
+            Customize
+          </button>
+        </div>
+
+        <div
+          className={
+            mode === 'multi'
+              ? 'flex flex-row'
+              : 'flex flex-column'
+          }
+          style={
+            mode === 'multi'
+              ? { flex: 1 }
+              : {
+                  flex: 1,
+                  position: 'relative',
+                }
+          }
+        >
+          <EditorPanel
+            className={`
+              opacity-animated
+              ${
+                layout.mode === 'single' &&
+                layout.focus !== 'editor'
+                  ? 'opacity-0'
+                  : ''
+              }
+              ${
+                layout.mode === 'single'
+                  ? 'absolute-fill'
+                  : ''
+              }
+            `}
+            style={getPanelStyle('editor')}
+          />
+
+          <ViewerPanel
+            className={
+              layout.mode === 'single'
+                ? 'absolute-fill'
+                : ''
+            }
+            style={getPanelStyle('viewer')}
+          />
+
+          <CustomizerPanel
+            className={`
+              opacity-animated
+              ${
+                layout.mode === 'single' &&
+                layout.focus !== 'customizer'
+                  ? 'opacity-0'
+                  : ''
+              }
+              ${
+                layout.mode === 'single'
+                  ? 'absolute-fill'
+                  : ''
+              }
+            `}
+            style={getPanelStyle('customizer')}
+          />
+        </div>
+
+        <Footer />
+        <ConfirmDialog />
+      </div>
+    </FSContext.Provider>
+  </ModelContext.Provider>
+);
 }
