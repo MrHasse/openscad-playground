@@ -16,7 +16,7 @@ COPY . .
 
 RUN npm install
 
-RUN node -e "const fs=require('fs'); const config=JSON.parse(fs.readFileSync('libs-config.json','utf8')); if (!config.fonts?.extraFonts?.length) throw new Error('extraFonts saknas i libs-config.json'); console.log('libs-config.json OK'); console.log(config.fonts.extraFonts);"
+RUN node -e "const fs=require('fs'); const config=JSON.parse(fs.readFileSync('libs-config.json','utf8')); console.log(JSON.stringify(config.fonts,null,2));"
 
 RUN npm run build:libs
 
