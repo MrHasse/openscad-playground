@@ -123,13 +123,15 @@
 }
 
 @media only screen and (max-width: 767px) {
+
   html,
   body,
   #root {
     width: 100%;
+    max-width: 100vw;
     height: 100dvh;
     min-height: 100dvh;
-    overflow: hidden;
+    overflow-x: hidden;
   }
 
   .desktop-panel-switcher {
@@ -167,8 +169,39 @@
     color: #ffffff;
   }
 
-  .mobile-panel-button:active {
-    transform: scale(0.98);
+  .p-fieldset,
+  .p-fieldset-content,
+  .p-inputgroup,
+  .p-inputtext,
+  .p-dropdown,
+  .p-inputnumber,
+  .p-inputnumber-input {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .p-fieldset {
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  .p-fieldset-content {
+    min-width: 0 !important;
+    width: 100% !important;
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+  }
+
+  .p-inputtext,
+  .p-dropdown,
+  .p-inputnumber {
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  .p-fieldset,
+  .p-fieldset * {
+    overflow-wrap: anywhere;
   }
 
   .p-tabmenu-nav {
