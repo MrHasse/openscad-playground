@@ -165,7 +165,7 @@ return (
               ${
                 layout.mode === 'single' &&
                 layout.focus !== 'editor'
-                  ? 'opacity-0'
+                  ? 'opacity-0 no-pointer-events'
                   : ''
               }
               ${
@@ -177,14 +177,18 @@ return (
             style={getPanelStyle('editor')}
           />
 
-          <ViewerPanel
-            className={
-              layout.mode === 'single'
-                ? 'absolute-fill'
-                : ''
-            }
-            style={getPanelStyle('viewer')}
-          />
+<ViewerPanel
+  className={`
+    ${layout.mode === 'single' ? 'absolute-fill' : ''}
+    ${
+      layout.mode === 'single' &&
+      layout.focus !== 'viewer'
+        ? 'no-pointer-events'
+        : ''
+    }
+  `}
+  style={getPanelStyle('viewer')}
+/>
 
           <CustomizerPanel
             className={`
@@ -192,7 +196,7 @@ return (
               ${
                 layout.mode === 'single' &&
                 layout.focus !== 'customizer'
-                  ? 'opacity-0'
+                  ? 'opacity-0 no-pointer-events'
                   : ''
               }
               ${
