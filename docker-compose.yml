@@ -4,11 +4,11 @@ services:
       context: .
       dockerfile: Dockerfile
 
-    container_name: openscad-playground
+    container_name: openscad-playground-custom
     restart: unless-stopped
 
     ports:
-      - "8086:80"
+      - "8085:80"
 
     volumes:
       - /openscad/models:/usr/share/nginx/html/models:ro
