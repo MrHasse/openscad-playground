@@ -18,9 +18,6 @@ COPY . .
 # Installera dependencies
 RUN npm install
 
-# Rensa tidigare genererade bibliotek/fontpaket
-RUN npm run build:libs:clean
-
 # Bygg WASM-resurser, bibliotek och fonter
 RUN npm run build:libs
 
