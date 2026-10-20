@@ -12,16 +12,23 @@ RUN apt-get update \
 
 WORKDIR /app
 
-# Kopiera ditt fork, inklusive ändringarna för Pacifico
 COPY . .
 
-# Installera dependencies
-RUN npm install
+RUN npm ci
 
-# Bygg WASM-resurser, bibliotek och fonter
+# Kontrollera att vår Pacifico-konfiguration verkligen finns
+RUN node -e "\
+const fs = require('fs'); \
+const config = JSON.parse(fs.readFileSync('libs-config.json', 'utf8')); \
+if (!config.fonts?.extraFonts?.length) \
+    throw new Error('extraFonts saknas i libs-config.json'); \
+console.log('libs-config.json OK'); \
+console.log(config.fonts.extraFonts);"
+
+# Bygger WASM, bibliotek och fonter
 RUN npm run build:libs
 
-# Bygg färdig webbapp
+# Bygger Playground
 RUN npm run build
 
 
